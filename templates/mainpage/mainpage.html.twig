@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	Mainpage
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		{{ parent() }}
+        <div class="buttonsMP">
+            <button class="mainpageButton">Show employees</button>
+            <button class="mainpageButton">Add employee</button>
+            <button class="mainpageButton">Show one employee</button>
+        </div>
+	</div>
+{% endblock %}

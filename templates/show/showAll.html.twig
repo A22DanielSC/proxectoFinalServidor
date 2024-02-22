@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	Mainpage
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		{{ parent() }}
+		<div class="showInfo">
+			{% for employee in employees %}
+            
+				<div class="showEmployee">
+					<h3>{{employee.name}}</h3>
+                    <p>{{employee.dni}}</p>
+                    <p>{{employee.birthDate}}</p>
+                    <p>{{employee.dateStartCompany}}</p>
+                    <p>{{employee.dateEndCompany}}</p>
+                    <p>{{employee.position}}</p>
+                    <p>{{employee.salary}}</p>
+                    <p>{{employee.working}}</p>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

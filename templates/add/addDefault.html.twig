@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	{{title}}
+{% endblock %}
+{% block body %}
+	{{ parent() }}
+	<h1>Adding default data to Database</h1>
+	<p>{{ data }}
+		employees have been uploaded to the database</p>
+{% endblock %}
