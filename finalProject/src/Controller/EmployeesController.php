@@ -121,19 +121,19 @@ class EmployeesController extends AbstractController
         $employee = new Employees();
         $form = $this->createFormBuilder($employee)->add("name")
             ->add("dni")->add("birthDate", DateType::class, ['widget' => 'single_text'])->add("dateStartCompany", DateType::class, ['widget' => 'single_text'])
-            ->add("dateEndCompany")->add("position")->add("salary")
+            ->add("dateEndCompany", DateType::class, ["required" => false, 'widget' => 'single_text'])->add("position")->add("salary")
             ->add("working")->getForm();
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $post = $form->getData();
             $dateEndCompany = $employee->getDateEndCompany();
             if ($dateEndCompany == null) {
-                $employee->setDateEndCompany(null);
+                $employee->setDateEndCompany(new DateTime("1111-11-11"));
             }
             $employeeRep->add($post);
             $this->addFlash('success', 'Your employee has been addded.');
         }
-        return $this->render("./add/addOne.html.twig", ["title" => "Add an employee", "form" => $form]);
+        return $this->render("./add/addOne.html.twig", ["title" => "Add an employee", "form" => $form, "buttonValue" => "Add"]);
     }
     #[Route("/employee/edit/{id}", name: "edit_employee")]
     public function editEmployee($id, Request $request, EmployeesRepository $employeeRep)
@@ -141,18 +141,20 @@ class EmployeesController extends AbstractController
         $employee = $employeeRep->find($id);
         $form = $this->createFormBuilder($employee)->add("name")
             ->add("dni")->add("birthDate", DateType::class, ['widget' => 'single_text'])->add("dateStartCompany", DateType::class, ['widget' => 'single_text'])
-            ->add("dateEndCompany", DateType::class, [ "required" => false, 'widget' => 'single_text'])->add("position")->add("salary")
+            ->add("dateEndCompany", DateType::class, ["required" => false, 'widget' => 'single_text'])->add("position")->add("salary")
             ->add("working")->getForm();
+        $dateEndCompany = $form->get('dateEndCompany')->getData();
+        if ($dateEndCompany === null) {
+            $form->get('dateEndCompany')->setData(new DateTime("1111-11-11"));
+        }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $post = $form->getData();
-            $dateEndCompany = $form->get('dateEndCompany')->getData();
-            // dd($dateEndCompany);
-           
+
             $employeeRep->add($post);
             $this->addFlash('success', 'Your employee has been edited.');
         }
-        return $this->render("./add/addOne.html.twig", ["title" => "Add an employee", "form" => $form]);
+        return $this->render("./add/addOne.html.twig", ["title" => "Add an employee", "form" => $form, "buttonValue" => "Edit"]);
     }
     #[Route("/employee/find", name: "find_one_employee")]
     public function findEmployee(Request $request, EmployeesRepository $employeeRep)
@@ -169,8 +171,14 @@ class EmployeesController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $post = $form->getData();
-            dd($post);
+            $dni = $post->getDni();
+            $employee = $employeeRep->findOneByDni($dni);
+            if ($employee === null) {
+                $this->addFlash('error', 'The employee has not been found.');
+            }
+            return $this->render("./show/showOne.html.twig", ["title" => "Show one employee", "employee" => $employee, "hideElement" => true]);
+        } else {
+            return $this->render("./show/findEmployee.html.twig", ["title" => "Find one employee", "hideElement" => true, "form" => $form]);
         }
-        return $this->render("./show/findEmployee.html.twig", ["title" => "Find an employee", "form" => $form]);
     }
 }

@@ -1,3 +1,4 @@
+{% if employee %}
 <div class="showEmployee">
 	<h3>{{ employee.name }}</h3>
 	<p>DNI:
@@ -6,17 +7,26 @@
 		{{ employee.birthDate|date("d/m/Y") }}</p>
 	<p>In the company since:
 		{{ employee.dateStartCompany|date("d/m/Y") }}</p>
-	<p>End of the relationship:
+		{% if not employee.working %}
+			<p>End of the relationship:
 		{{ employee.dateEndCompany|date("d/m/Y") }}</p>
+		{% endif %}
 	<p>Position:
 		{{ employee.position }}</p>
 	<p>Annual salary:
 		{{ employee.salary }}</p>
 	<p>Situation on the company:
 		{{ employee.working ? "Working" : "Not working" }}</p>
+	<div id="showEmployeesButtons">
 	{% if not hideElement %}
 		<a href="{{ path("show_one_employee", {id: employee.id}) }}"><input type="button" class="buttons" value="Show"/>
 	{% endif %}
         <a href="{{ path("edit_employee", {id: employee.id}) }}"><input type="button" class="buttons" value="Edit"/>
 	</a>
+	</div>
 </div>
+{% else %}
+<div class="showEmployee">
+	<h3 class="error">Employee has not been found</h3>
+</div>
+{% endif %}
