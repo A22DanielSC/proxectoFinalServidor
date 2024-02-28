@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	{{title}}
+{% endblock %}
+
+{% block body %}
+	{{parent()}}
+	{{ form_start(form) }}
+	{% for message in app.flashes('success') %}
+		<div style="color: green">{{ message }}</div>
+	{% endfor %}
+	<div>{{ form_errors(form) }}</div>
+	<div>{{ form_label(form.name) }}</div>
+	<div>{{ form_widget(form.name) }}</div>
+	<div>{{ form_label(form.dni) }}</div>
+	<div>{{ form_widget(form.dni) }}</div>
+	<div>{{ form_label(form.birthDate) }}</div>
+	<div>{{ form_widget(form.birthDate) }}</div>
+	<div>{{ form_label(form.dateStartCompany) }}</div>
+	<div>{{ form_widget(form.dateStartCompany) }}</div>
+	<div>{{ form_label(form.dateEndCompany) }}</div>
+	<div>{{ form_widget(form.dateEndCompany) }}</div>
+	<div>{{ form_label(form.position) }}</div>
+	<div>{{ form_widget(form.position) }}</div>
+	<div>{{ form_label(form.salary) }}</div>
+	<div>{{ form_widget(form.salary) }}</div>
+	<div>{{ form_label(form.working) }}</div>
+	<div>{{ form_widget(form.working) }}</div>
+	<button type="submit">Add</button>
+	{{ form_end(form) }}
+{% endblock %}

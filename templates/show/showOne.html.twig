@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	{{title}}
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		{{ parent() }}
+		<div class="showInfo">
+				{% include './show/template_showEmployee.html.twig' %}
+		</div>
+	</div>
+{% endblock %}

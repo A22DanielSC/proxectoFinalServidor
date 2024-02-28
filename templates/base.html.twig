@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}{{title}}{% endblock %}</title>
-        {% block stylesheets %}
-        {{ encore_entry_link_tags('app')}}
-        {% endblock %}
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}
+				{{title}}
+			{% endblock %}
+		</title>
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('app')}}
+		{% endblock %}
 
-        {% block javascripts %}
-        {{ encore_entry_script_tags('app')}}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}
-     
-            <div class="header">
-                <img alt="companyLogo" src="./images/logo.png"/>
-            </div>
-       
-        {% endblock %}
-    </body>
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app')}}
+		{% endblock %}
+	</head>
+	<body>
+		{% block body %}
+			<div class="header">
+				<a href={{ path("homepage") }} ><img alt="companyLogo" src={{ asset("./images/logo.png")}}/></a>
+			</div>
+		{% endblock %}
+	</body>
 </html>

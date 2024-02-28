@@ -21,13 +21,13 @@ class Employees
     private ?string $dni = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $birthDate = null;
+    private ?\DateTimeInterface $birth_date = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $dateStartCompany = null;
+    private ?\DateTimeInterface $date_start_company = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $dateEndCompany = null;
+    private ?\DateTimeInterface $date_end_company = null;
 
     #[ORM\Column(length: 80)]
     private ?string $position = null;
@@ -36,7 +36,7 @@ class Employees
     private ?int $salary = null;
 
     #[ORM\Column]
-    private ?bool $working = false;
+    private ?bool $working = null;
 
     public function getId(): ?int
     {
@@ -69,36 +69,36 @@ class Employees
 
     public function getBirthDate(): ?\DateTimeInterface
     {
-        return $this->birthDate;
+        return $this->birth_date;
     }
 
-    public function setBirthDate(\DateTimeInterface $birthDate): static
+    public function setBirthDate(\DateTimeInterface $birth_date): static
     {
-        $this->birthDate = $birthDate;
+        $this->birth_date = $birth_date;
 
         return $this;
     }
 
     public function getDateStartCompany(): ?\DateTimeInterface
     {
-        return $this->dateStartCompany;
+        return $this->date_start_company;
     }
 
-    public function setDateStartCompany(\DateTimeInterface $dateStartCompany): static
+    public function setDateStartCompany(\DateTimeInterface $date_start_company): static
     {
-        $this->dateStartCompany = $dateStartCompany;
+        $this->date_start_company = $date_start_company;
 
         return $this;
     }
 
     public function getDateEndCompany(): ?\DateTimeInterface
     {
-        return $this->dateEndCompany;
+        return $this->date_end_company;
     }
 
-    public function setDateEndCompany(?\DateTimeInterface $dateEndCompany): static
+    public function setDateEndCompany(?\DateTimeInterface $date_end_company): static
     {
-        $this->dateEndCompany = $dateEndCompany;
+        $this->date_end_company = $date_end_company;
 
         return $this;
     }

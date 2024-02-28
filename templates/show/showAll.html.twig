@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-	Mainpage
+{{title}}
 {% endblock %}
 
 {% block body %}
@@ -8,17 +8,7 @@
 		{{ parent() }}
 		<div class="showInfo">
 			{% for employee in employees %}
-            
-				<div class="showEmployee">
-					<h3>{{employee.name}}</h3>
-                    <p>{{employee.dni}}</p>
-                    <p>{{employee.birthDate}}</p>
-                    <p>{{employee.dateStartCompany}}</p>
-                    <p>{{employee.dateEndCompany}}</p>
-                    <p>{{employee.position}}</p>
-                    <p>{{employee.salary}}</p>
-                    <p>{{employee.working}}</p>
-				</div>
+				{% include './show/template_showEmployee.html.twig' %}
 			{% endfor %}
 		</div>
 	</div>

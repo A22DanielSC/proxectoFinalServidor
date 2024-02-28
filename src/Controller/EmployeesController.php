@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Employees;
@@ -6,20 +7,27 @@ use App\Repository\EmployeesRepository;
 use DateTime;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EmployeesController extends AbstractController{
-   
+class EmployeesController extends AbstractController
+{
 
-    #[Route("/", name:"homepage")]
-    public function homepage(): Response{
+    /*Mainpage for our project */
+    #[Route("/", name: "homepage")]
+    public function homepage(): Response
+    {
         return $this->render(
-            "./mainpage/mainpage.html.twig", ["title"=>"Mainpage"]
+            "./mainpage/mainpage.html.twig",
+            ["title" => "Mainpage"]
         );
     }
 
     #[Route("/addDefaultData")]
-    public function addDefaultData(EmployeesRepository $employeeRep): Response{
+    /*Method to upload default data to our database */
+    public function addDefaultData(EmployeesRepository $employeeRep): Response
+    {
         $employeesData = [
             [
                 'name' => 'Juan Pérez',
@@ -72,8 +80,10 @@ class EmployeesController extends AbstractController{
                 'working' => true,
             ],
         ];
+        /* Counting the number of employees added to display in our template */
         $numberRows = count($employeesData);
-        foreach ($employeesData as $employeeData){
+        /* Getting the data for each employee and making them persistent */
+        foreach ($employeesData as $employeeData) {
             $employee = new Employees();
             $employee->setName($employeeData["name"]);
             $employee->setDni($employeeData["dni"]);
@@ -85,15 +95,82 @@ class EmployeesController extends AbstractController{
             $employee->setWorking($employeeData["working"]);
             $employeeRep->persistEmployee($employee);
         }
+        /* Flushing to database all the employees */
         $employeeRep->flushToDatabase();
         return $this->render(
-            "./add/addDefault.html.twig", ["title"=>"Add default data", "data"=>$numberRows]
+            "./add/addDefault.html.twig",
+            ["title" => "Add default data", "data" => $numberRows]
         );
     }
-    #[Route("/showAll", name:"show_all_employees")]
-    public function showAllEmployees(EmployeesRepository $employeeRep){
+    /* Showing all the employees from our database */
+    #[Route("/employee/showall", name: "show_all_employees")]
+    public function showAllEmployees(EmployeesRepository $employeeRep)
+    {
         $allEmployees = $employeeRep->findAll();
-        return $this->render("./show/showAll.html.twig", ["employees" => $allEmployees]);
+        return $this->render("./show/showAll.html.twig", ["title" => "Show all employees", "employees" => $allEmployees, "hideElement" => false]);
     }
-
+    #[Route("/employee/show/{id}", name: "show_one_employee")]
+    public function showOneEmployee($id, EmployeesRepository $employeeRep)
+    {
+        $employee = $employeeRep->find($id);
+        return $this->render("./show/showOne.html.twig", ["title" => "Show one employee", "employee" => $employee, "hideElement" => true]);
+    }
+    #[Route("/employee/add", name: "add_employee")]
+    public function addEmployee(Request $request, EmployeesRepository $employeeRep)
+    {
+        $employee = new Employees();
+        $form = $this->createFormBuilder($employee)->add("name")
+            ->add("dni")->add("birthDate", DateType::class, ['widget' => 'single_text'])->add("dateStartCompany", DateType::class, ['widget' => 'single_text'])
+            ->add("dateEndCompany")->add("position")->add("salary")
+            ->add("working")->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $post = $form->getData();
+            $dateEndCompany = $employee->getDateEndCompany();
+            if ($dateEndCompany == null) {
+                $employee->setDateEndCompany(null);
+            }
+            $employeeRep->add($post);
+            $this->addFlash('success', 'Your employee has been addded.');
+        }
+        return $this->render("./add/addOne.html.twig", ["title" => "Add an employee", "form" => $form]);
+    }
+    #[Route("/employee/edit/{id}", name: "edit_employee")]
+    public function editEmployee($id, Request $request, EmployeesRepository $employeeRep)
+    {
+        $employee = $employeeRep->find($id);
+        $form = $this->createFormBuilder($employee)->add("name")
+            ->add("dni")->add("birthDate", DateType::class, ['widget' => 'single_text'])->add("dateStartCompany", DateType::class, ['widget' => 'single_text'])
+            ->add("dateEndCompany", DateType::class, [ "required" => false, 'widget' => 'single_text'])->add("position")->add("salary")
+            ->add("working")->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $post = $form->getData();
+            $dateEndCompany = $form->get('dateEndCompany')->getData();
+            // dd($dateEndCompany);
+           
+            $employeeRep->add($post);
+            $this->addFlash('success', 'Your employee has been edited.');
+        }
+        return $this->render("./add/addOne.html.twig", ["title" => "Add an employee", "form" => $form]);
+    }
+    #[Route("/employee/find", name: "find_one_employee")]
+    public function findEmployee(Request $request, EmployeesRepository $employeeRep)
+    {
+        $dni = $request->query->get("dni");
+        $employee = $employeeRep->findOneByDni($dni);
+        return $this->render("./show/showOne.html.twig", ["title" => "Show one employee", "employee" => $employee, "hideElement" => true]);
+    }
+    #[Route("/employee/findEmployees", name: "find_employee")]
+    public function formToFindEmployee(Request $request, EmployeesRepository $employeeRep)
+    {
+        $employee = new Employees();
+        $form = $this->createFormBuilder($employee)->add("dni")->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $post = $form->getData();
+            dd($post);
+        }
+        return $this->render("./show/findEmployee.html.twig", ["title" => "Find an employee", "form" => $form]);
+    }
 }

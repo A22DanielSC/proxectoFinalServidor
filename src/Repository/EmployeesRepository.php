@@ -26,6 +26,19 @@ class EmployeesRepository extends ServiceEntityRepository
     public function flushToDatabase(){
         $this->getEntityManager()->flush();
     }
+    public function add(Employees $employee){
+        $this->persistEmployee($employee);
+        $this->flushToDatabase();
+    }
+    public function findOneByDni($dni): ?Employees
+       {
+           return $this->createQueryBuilder('e')
+               ->andWhere('e.dni = :val')
+               ->setParameter('val', $dni)
+               ->getQuery()
+               ->getOneOrNullResult()
+           ;
+       }
 
     //    /**
     //     * @return Employees[] Returns an array of Employees objects
